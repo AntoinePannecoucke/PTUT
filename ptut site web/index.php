@@ -1,4 +1,5 @@
 <?php include 'Includes/config.php';?> 
+<?php include 'Includes/checkLog.php';?> 
 <!DOCTYPE HTML>
 <html lang="fr">
 	<head>
@@ -18,8 +19,7 @@
 					<div class="panel-group tool-tips widget-shadow" >
 						<?php 
 							try {
-								$dbh = new PDO('sqlite:data.db',$user,$password,[PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
-								$statement = $dbh->query("SELECT titre,description,langue FROM Contenue");
+								$statement = $dbh->query("SELECT titre,description,langue FROM Contenu");
 
 								while($row = $statement->fetch()){
 									echo '<div class="panel panel-default">';

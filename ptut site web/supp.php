@@ -1,4 +1,5 @@
 <?php include 'Includes/config.php';?> 
+<?php include 'Includes/checkLog.php';?> 
 <!DOCTYPE HTML>
 <html lang="fr">
 	<head>

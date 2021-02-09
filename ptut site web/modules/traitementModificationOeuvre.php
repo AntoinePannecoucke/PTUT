@@ -3,7 +3,7 @@ include '../Includes/config.php';
 
 if(isset($_POST)){
     	try {
-			$statement = $dbh->prepare("SELECT titre FROM Contenue WHERE UPPER(titre) LIKE :titre");
+			$statement = $dbh->prepare("SELECT titre FROM Contenu WHERE UPPER(titre) LIKE :titre");
 			$statement->execute(
 				[
 					'titre' => strtoupper($_POST['titre'])
@@ -13,7 +13,7 @@ if(isset($_POST)){
 
 			if ($result){
 
-				$statement = $dbh->prepare("UPDATE Contenue SET description = :description, langue = :langue WHERE UPPER(titre) LIKE :titre");
+				$statement = $dbh->prepare("UPDATE Contenu SET description = :description, langue = :langue WHERE UPPER(titre) LIKE :titre");
 				$statement->execute(
 					[
 						'description' => $_POST['description'],

@@ -3,7 +3,7 @@ include '../Includes/config.php';
 
 if(isset($_POST)){
     	try {
-			$statement = $dbh->prepare("SELECT id_beacon id FROM Contenue  INNER JOIN Connexion ON Contenue.Id_contenue = Connexion.id_contenu WHERE UPPER(titre) LIKE :titre");
+			$statement = $dbh->prepare("SELECT id_beacon id FROM Contenu  INNER JOIN Connexion ON Contenu.id_contenu = Connexion.id_contenu WHERE UPPER(titre) LIKE :titre");
 			$statement->execute(
 				[
 					'titre' => strtoupper($_POST['titre'])
@@ -13,7 +13,7 @@ if(isset($_POST)){
 
 			if ($result){
 
-				$statement = $dbh->prepare("UPDATE Beacon SET adresseMac = :adresse, salle = :salle WHERE Id_beacon = :id");
+				$statement = $dbh->prepare("UPDATE Beacon SET adresseMac = :adresse, salle = :salle WHERE id_beacon = :id");
 				$statement->execute(
 					[
 						'adresse' => $_POST['adresse'],
