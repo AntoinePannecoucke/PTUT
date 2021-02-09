@@ -4,20 +4,17 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
-<<<<<<< HEAD
+
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
-=======
->>>>>>> master
+
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-<<<<<<< HEAD
+
 import android.widget.Toast;
 
-=======
->>>>>>> master
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -25,37 +22,34 @@ import androidx.core.content.ContextCompat;
 
 //Todo check si l'utilisateur enlève le bleuthoot
 public class MainActivity extends AppCompatActivity {
-<<<<<<< HEAD
-    private BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
+    private BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
 
     // Stops scanning after 10 seconds.
     private static final long SCAN_PERIOD = 10000;
 
-=======
+
     private BluetoothAdapter blueAdapter = BluetoothAdapter.getDefaultAdapter();
->>>>>>> master
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-<<<<<<< HEAD
+
         // Checks if Bluetooth is supported on the device.
 
 
         checkBluetoothSupported();
 
-=======
->>>>>>> master
 
         activationBluetooth();
         checkLocationPermission();
     }
 
-<<<<<<< HEAD
-    public void checkBluetoothSupported(){
+
+    public void checkBluetoothSupported() {
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
             Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_SHORT).show();
             finish();
@@ -78,8 +72,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-=======
->>>>>>> master
     public void checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // Should we show an explanation?
@@ -140,44 +132,43 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    public void activationBluetooth() {
 
-    public void activationBluetooth(){
-<<<<<<< HEAD
         if (!bluetoothAdapter.isEnabled()) {
-=======
-        if (!blueAdapter.isEnabled()) {
->>>>>>> master
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, 1);
+            if (!blueAdapter.isEnabled()) {
+                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(enableBtIntent, 1);
+            }
         }
     }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
 
-        switch (requestCode){
-            case 1:
-                if(resultCode == Activity.RESULT_OK){
-<<<<<<< HEAD
-                    bluetoothAdapter.enable();
-=======
-                    blueAdapter.enable();
->>>>>>> master
-                }
-                else{
-                    AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
-                    alert.setTitle("Error");
-                    alert.setMessage("L'application doit utiliser le bluetooth").setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            finish();
-                        }
-                    });
-                    alert.setCancelable(false);
-                    alert.create();
-                    alert.show();
-                }
-                break;
+
+        @Override
+        protected void onActivityResult ( int requestCode, int resultCode, Intent data){
+            super.onActivityResult(requestCode, resultCode, data);
+
+            switch (requestCode) {
+                case 1:
+                    if (resultCode == Activity.RESULT_OK) {
+
+                        bluetoothAdapter.enable();
+
+                    } else {
+                        AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+                        alert.setTitle("Error");
+                        alert.setMessage("L'application doit utiliser le bluetooth").setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                finish();
+                            }
+                        });
+                        alert.setCancelable(false);
+                        alert.create();
+                        alert.show();
+                    }
+                    break;
+            }
         }
-    }
+
+
 }
