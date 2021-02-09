@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 
@@ -13,41 +14,95 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
+import android.os.Handler;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import java.util.ArrayList;
+
 
 //Todo check si l'utilisateur enlève le bleuthoot
 public class MainActivity extends AppCompatActivity {
 
     private BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
+    private ArrayList<BluetoothDevice> listDeviceBluetooth = new ArrayList<>();
 
     // Stops scanning after 10 seconds.
     private static final long SCAN_PERIOD = 10000;
 
 
     private BluetoothAdapter blueAdapter = BluetoothAdapter.getDefaultAdapter();
-
+    private Handler mHandler;
+    private boolean mScanning;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Checks if Bluetooth is supported on the device.
-
-
         checkBluetoothSupported();
-
-
         activationBluetooth();
         checkLocationPermission();
     }
 
+
+    @Override //est call après onCreate
+    protected void onResume() {
+        super.onResume();
+        mHandler = new Handler();
+
+        scanLeDevice(true); //start scan
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        scanLeDevice(false); // stop scan
+        listDeviceBluetooth.clear();
+    }
+
+
+    private void scanLeDevice(final boolean enable) {
+        if (enable) {
+            // Stops scanning after a pre-defined scan period.
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mScanning = false;
+                    blueAdapter.stopLeScan(mLeScanCallback);
+                    invalidateOptionsMenu();
+                }
+            }, SCAN_PERIOD);
+
+            mScanning = true;
+            blueAdapter.startLeScan(mLeScanCallback);
+        } else {
+            mScanning = false;
+            blueAdapter.stopLeScan(mLeScanCallback);
+        }
+        invalidateOptionsMenu();
+    }
+
+    private BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
+        @Override
+        public void onLeScan(final BluetoothDevice bluetoothDevice, int i, byte[] bytes) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Log.e("BluetoothDevice", bluetoothDevice.getAddress());
+                    //Log.e("BluetoothDevice", bluetoothDevice.getName());
+
+                    listDeviceBluetooth.add(bluetoothDevice);
+
+                }
+            });
+        }
+    };
 
     public void checkBluetoothSupported() {
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
@@ -70,7 +125,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
 
     public void checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -142,7 +196,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
         @Override
         protected void onActivityResult ( int requestCode, int resultCode, Intent data){
             super.onActivityResult(requestCode, resultCode, data);
@@ -150,9 +203,7 @@ public class MainActivity extends AppCompatActivity {
             switch (requestCode) {
                 case 1:
                     if (resultCode == Activity.RESULT_OK) {
-
                         bluetoothAdapter.enable();
-
                     } else {
                         AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
                         alert.setTitle("Error");
