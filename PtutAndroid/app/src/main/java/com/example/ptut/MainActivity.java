@@ -4,10 +4,14 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -15,16 +19,50 @@ import androidx.core.content.ContextCompat;
 
 //Todo check si l'utilisateur enlève le bleuthoot
 public class MainActivity extends AppCompatActivity {
-    private BluetoothAdapter blueAdapter = BluetoothAdapter.getDefaultAdapter();
+    private BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+
+
+    // Stops scanning after 10 seconds.
+    private static final long SCAN_PERIOD = 10000;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        // Checks if Bluetooth is supported on the device.
+
+
+        checkBluetoothSupported();
+
 
         activationBluetooth();
         checkLocationPermission();
     }
+
+    public void checkBluetoothSupported(){
+        if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
+            Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_SHORT).show();
+            finish();
+        }
+
+
+        final BluetoothManager bluetoothManager;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+
+            bluetoothAdapter = bluetoothManager.getAdapter();
+
+            // Checks if Bluetooth is supported on the device.
+            if (bluetoothAdapter == null) {
+                Toast.makeText(this, R.string.error_bluetooth_not_supported, Toast.LENGTH_SHORT).show();
+                finish();
+                return;
+            }
+        }
+    }
+
 
     public void checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -88,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void activationBluetooth(){
-        if (!blueAdapter.isEnabled()) {
+        if (!bluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, 1);
         }
@@ -100,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
         switch (requestCode){
             case 1:
                 if(resultCode == Activity.RESULT_OK){
-                    blueAdapter.enable();
+                    bluetoothAdapter.enable();
                 }
                 else{
                     AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
