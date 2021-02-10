@@ -26,13 +26,15 @@ import java.util.ArrayList;
 
 
 //Todo check si l'utilisateur enlève le bleuthoot
+//TODO si on back press relancer le scan
+//TODO quand on a la carte stop start
 public class MainActivity extends AppCompatActivity {
 
     private BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     private ArrayList<BluetoothDevice> listDeviceBluetooth = new ArrayList<>();
 
-    // Stops scanning after 10 seconds.
-    private static final long SCAN_PERIOD = 10000;
+    // Stops scanning after 5 mn.
+    private static final long SCAN_PERIOD = 300000;
 
 
     private BluetoothAdapter blueAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -50,13 +52,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    @Override //est call après onCreate
+    @Override
     protected void onResume() {
         super.onResume();
         mHandler = new Handler();
 
         scanLeDevice(true); //start scan
-
+        listDeviceBluetooth.clear();
     }
 
     @Override
@@ -66,6 +68,15 @@ public class MainActivity extends AppCompatActivity {
         listDeviceBluetooth.clear();
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        mHandler = new Handler();
+
+        scanLeDevice(true); //start scan
+        listDeviceBluetooth.clear();
+    }
 
     private void scanLeDevice(final boolean enable) {
         if (enable) {
@@ -94,11 +105,26 @@ public class MainActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Log.e("BluetoothDevice", bluetoothDevice.getAddress());
-                    //Log.e("BluetoothDevice", bluetoothDevice.getName());
 
-                    listDeviceBluetooth.add(bluetoothDevice);
+                    boolean flag = false;
 
+                    if(bluetoothDevice.getName().contains("Adafruit")){
+                        flag = true;
+                        for(int i = 0; i < listDeviceBluetooth.size(); i++){
+                            if(listDeviceBluetooth.get(i) == bluetoothDevice){
+                                flag = false;
+                            }
+                        }
+                    }
+
+                    if(flag){
+                        listDeviceBluetooth.add(bluetoothDevice);
+                        Intent intent = new Intent(MainActivity.this, ArtworkDisplay.class);
+                        intent.putExtra("Mac",listDeviceBluetooth.get(0).getAddress());
+                        scanLeDevice(false); // stop scan
+                        listDeviceBluetooth.clear();
+                        startActivity(intent);
+                    }
                 }
             });
         }

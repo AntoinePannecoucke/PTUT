@@ -1,6 +1,7 @@
 package com.example.ptut;
 
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.TextView;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,6 +37,7 @@ public class RequestToAPI extends AsyncTask<Object, Void, String[]> {
         String[] retour = new String[2];
         try {
             URL url = new URL(URL_API + key);
+            Log.e("requete", String.valueOf(url));
             HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
             if (urlConnection.getResponseCode() == HttpsURLConnection.HTTP_OK){
                 BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));

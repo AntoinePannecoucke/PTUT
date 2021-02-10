@@ -12,8 +12,9 @@ public class ArtworkDisplay extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_artwork_display);
 
-        TextView title = findViewById(R.id.tiltle);
-
-
+        TextView title = findViewById(R.id.title_label);
+        TextView description = findViewById(R.id.description_label);
+        RequestToAPI request = new RequestToAPI();
+        request.execute(title, description, getIntent().getExtras().getString("Mac"));
     }
 }
