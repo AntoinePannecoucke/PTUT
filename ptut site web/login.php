@@ -11,13 +11,13 @@
 		<div class="main-content">
 			<div id="page-wrapper">
 				<div class="main-page login-page ">
-					<h2 class="title1">Login</h2>
+					<h2 class="title1">Connexion</h2>
 					<div class="widget-shadow">
 						<div class="login-body">
 							<form action="../modules/traitementLogin.php" method="post">
-								<input type="email" class="user" name="email" placeholder="email" required>
-								<input type="password" name="password" class="lock" placeholder="password" required>
-								<input type="submit" name="Sign In" value="Sign In">
+								<input type="email" class="user" name="email" placeholder="Email" required>
+								<input type="password" name="password" class="lock" placeholder="Mot de passe" required>
+								<input type="submit" name="Sign In" value="Se connecter">
 							</form>
 						</div>
 					</div>
