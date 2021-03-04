@@ -1,6 +1,7 @@
 <?php
 // EF:E7:89:69:9D:C5
     include "../Includes/config.php";
+    
     if (isset($_GET)){
         if (isset($_GET['key'])){
             try {
@@ -25,4 +26,5 @@
             }
         }
     }
+
 ?>
